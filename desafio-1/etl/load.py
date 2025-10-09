@@ -1,7 +1,10 @@
+import logging
 import os
 import pandas as pd
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 def get_db_engine():
     """
@@ -14,7 +17,7 @@ def get_db_engine():
     if not database_url:
         raise ValueError("A variável de ambiente DATABASE_URL não foi definida.")
     
-    print("Criando engine de conexão com o banco de dados...")
+    logger.info("Criando engine de conexão com o banco de dados...")
     return create_engine(database_url)
 
 def load_data(df_pacotes: pd.DataFrame, df_eventos: pd.DataFrame):
@@ -31,7 +34,7 @@ def load_data(df_pacotes: pd.DataFrame, df_eventos: pd.DataFrame):
         with conn.begin() as transaction:
             try:
                 # [Pacotes]
-                print(f"Iniciando carregamento de {len(df_pacotes)} registros na tabela 'pacotes'...")
+                logger.info(f"Iniciando carregamento de {len(df_pacotes)} registros na tabela 'pacotes'...")
 
                 # Upsert: Inserir em uma tabela temporária e depois usar 'ON CONFLICT' para
                 # inserir apenas pacotes novos no banco
@@ -51,10 +54,10 @@ def load_data(df_pacotes: pd.DataFrame, df_eventos: pd.DataFrame):
                                   ON CONFLICT (id_pacote) DO NOTHING;
                 """)
                 result_pacotes = conn.execute(upsert_pacotes_sql)
-                print(f"[*] {result_pacotes.rowcount} novos registros de pacotes inseridos.")
+                logger.info(f"[*] {result_pacotes.rowcount} novos registros de pacotes inseridos.")
 
                 # [Eventos]
-                print (f"Iniciando carregamento de {len(df_eventos)} registros na tabela 'eventos_rastreamento'...")
+                logger.info(f"Iniciando carregamento de {len(df_eventos)} registros na tabela 'eventos_rastreamento'...")
 
                 # Upsert: Inserir em uma tabela temporária e depois usar 'ON CONFLICT' para
                 # inserir apenas eventos novos no banco
@@ -74,12 +77,12 @@ def load_data(df_pacotes: pd.DataFrame, df_eventos: pd.DataFrame):
                                   ON CONFLICT (id_pacote, data_evento) DO NOTHING;
                 """)
                 result_eventos = conn.execute(upsert_eventos_sql)
-                print(f"[*] {result_eventos.rowcount} novos registros de eventos inseridos.")
+                logger.info(f"[*] {result_eventos.rowcount} novos registros de eventos inseridos.")
 
-                print("\nTransação concluída com sucesso.")
+                logger.info("Transação concluída com sucesso.")
             
             except Exception as e:
-                print(f"ERRO: Erro na transação. Fazendo rollback...")
+                logger.exception(f"Erro na transação. Fazendo rollback...")
                 transaction.rollback()
-                print(f"Erro: {e}")
+                logger.exception(f"Erro: {e}")
                 raise

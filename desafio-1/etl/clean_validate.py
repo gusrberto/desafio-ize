@@ -1,4 +1,7 @@
+import logging
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 def clean_and_validate(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -7,7 +10,7 @@ def clean_and_validate(df: pd.DataFrame) -> pd.DataFrame:
     - Valida e converte os tipos de dados
     - Remove linhas com dados inválidos ou ausentes
     """
-    print("Iniciando limpeza e validação dos dados...")
+    logger.info("Iniciando limpeza e validação dos dados...")
 
     # Limpeza nos campos de texto do CSV
     colunas_texto = ["origem", "destino", "status_rastreamento"]
@@ -27,9 +30,15 @@ def clean_and_validate(df: pd.DataFrame) -> pd.DataFrame:
     linhas_invalidas = df[df.isnull().any(axis=1)] # Cópia das linhas inválidas para análise
 
     if not linhas_invalidas.empty:
-        print(f"AVISO: Foram encontradas {len(linhas_invalidas)} linhas com dados inválidos/ausentes. Elas serão removidas")
-        print("Linhas removidas:")
-        print(linhas_invalidas)
+        indices_invalidos = linhas_invalidas.index.tolist()
+        logger.warning(
+            f"Foram encontradas {len(linhas_invalidas)} linhas com dados inválidos/ausentes. Elas serão removidas"
+            f"Índices removidos: {indices_invalidos}"
+        )
+
+        # Em nível de DEBUG é possível ver quais linhas são inválidas
+        invalid_rows_json = linhas_invalidas.to_json(orient='records', date_format='iso')
+        logger.debug(f"Conteúdo detalhado das linhas inválidas: {invalid_rows_json}")
 
     # Remove as linhas que tenham qualquer valor nulo (NaN ou NaT)
     df.dropna(inplace=True)
@@ -37,6 +46,6 @@ def clean_and_validate(df: pd.DataFrame) -> pd.DataFrame:
     # Com os NaN removidos, volta o tipo da coluna para int
     df["id_pacote"] = df["id_pacote"].astype(int)
 
-    print(f"Limpeza concluída. {len(df)}/{linhas_originais} linhas válidas restantes.")
+    logger.info(f"Limpeza concluída. {len(df)}/{linhas_originais} linhas válidas restantes.")
 
     return df
