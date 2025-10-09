@@ -8,14 +8,11 @@ def transform(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
 
     # Cria o DataFrame dos eventos de rastreamento
-    df_eventos = df[["id_pacote", "status_atualizacao", "data_atualizacao"]].copy()
+    df_eventos = df[["id_pacote", "status_rastreamento", "data_atualizacao"]].copy()
     df_eventos.rename(columns={"data_atualizacao": "data_evento"}, inplace=True)
 
-    # Ordena o DataFrame pela data de atualização decrescente (Atualização mais recente primeiro)
-    df_ordenado = df.sort_values(by="data_atualizacao", ascending=False) 
-
-    # Garante que caso haja produtos duplicados no CSV, somente a atualização mais recente é considerada
-    df_pacotes_unicos = df_ordenado.drop_duplicates(subset=["id_pacote"], keep='first')
-    df_pacotes = df_pacotes_unicos[["id_pacote", "origem", "destino"]].copy()
+    # Garante que caso haja produtos duplicados no CSV, somente a primeira encontrada é considerada 
+    df_pacotes = df[["id_pacote", "origem", "destino"]].copy()
+    df_pacotes = df_pacotes.drop_duplicates(subset=["id_pacote"], keep='first')
 
     return df_pacotes, df_eventos
