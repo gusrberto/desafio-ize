@@ -13,7 +13,9 @@ CREATE TABLE eventos_rastreamento (
 
     CONSTRAINT fk_eventos_pacotes
         FOREIGN KEY(id_pacote)
-        REFERENCES pacotes(id_pacote)
+        REFERENCES pacotes(id_pacote),
+    CONSTRAINT uq_pacote_data_evento
+        UNIQUE (id_pacote, data_evento)
 );
 
 -- Criar um índice para ganho de desempenho em busca de eventos
