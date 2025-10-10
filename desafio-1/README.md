@@ -33,7 +33,7 @@ O processo de ETL foi dividido nas seguintes etapas:
 
 <center>
 
-![Pipeline no Airflow](../docs/pipeline-airflow.png)
+![Pipeline no Airflow](./docs/pipeline-airflow.png)
 **Figura 1 - Pipeline do projeto no Apache Airflow**
 
 </center>
@@ -96,7 +96,7 @@ O desafio foi decomposto em tarefas menores e gerenciáveis, onde cada uma foi r
 
 <center>
 
-![Imagem Kanban](../docs/kanban-gitprojects.png)
+![Imagem Kanban](./docs/kanban-gitprojects.png)
 **Figura 2 - Kanban do projeto no GitProjects com as Issues representadas como tasks**
 
 </center>
@@ -165,7 +165,7 @@ CREATE INDEX idx_eventos_id_pacote ON eventos_rastreamento(id_pacote);
     ```
 
     Exemplo de conteúdo para a `.env` que executa o Airflow:
-    ```toml
+    ```ini
     POSTGRES_USER=docker
     POSTGRES_PASSWORD=12345
     POSTGRES_DB=logistica_pacotes
@@ -176,7 +176,7 @@ CREATE INDEX idx_eventos_id_pacote ON eventos_rastreamento(id_pacote);
     ```
 
     Exemplo de conteúdo para a `pipeline/.env` que executa o pipeline local:
-    ```toml
+    ```ini
     POSTGRES_USER=docker
     POSTGRES_PASSWORD=12345
     POSTGRES_DB=logistica_pacotes
