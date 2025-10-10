@@ -6,19 +6,26 @@ from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 
-def get_db_engine():
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+
+def get_db_url() -> str:
     """
-    Cria e retorna uma engine de conexão do SQLAlchemy
-    utilizando DATABASE_URL do arquivo .env
+    Obtém a URL de conexão do banco de dados, detectando
+    se está rodando em um ambiente Airflow ou local.
     """
 
-    load_dotenv()
-    database_url = os.getenv("DATABASE_URL")
-    if not database_url:
-        raise ValueError("A variável de ambiente DATABASE_URL não foi definida.")
+    if os.getenv("AIRFLOW_HOME"):
+        logger.info("Ambiente Airflow detectado. Usando Airflow Connection 'postgres_pipeline_db'.")
+        hook = PostgresHook(postgres_conn_id="postgres_pipeline_db")
+        return hook.get_uri()
+    else:
+        logger.info("Amiente local detectado. Carregando .env e usando 'LOCAL_DATABASE_URL'.")
+        load_dotenv()
+        database_url = os.getenv("LOCAL_DATABASE_URL")
+        if not database_url:
+            raise ValueError("A variável de ambiente LOCAL_DATABASE_URL não foi definida no arquivo .env.")
     
-    logger.info("Criando engine de conexão com o banco de dados...")
-    return create_engine(database_url)
+        return database_url
 
 def load_data(df_pacotes: pd.DataFrame, df_eventos: pd.DataFrame):
     """
@@ -26,7 +33,8 @@ def load_data(df_pacotes: pd.DataFrame, df_eventos: pd.DataFrame):
     - Estratégia "upsert" para ambas as tabela `pacotes` e `eventos_rastreamento`.
     """
 
-    engine = get_db_engine()
+    db_url = get_db_url()
+    engine = create_engine(db_url)
 
     # Context manager para garantir que a conexão seja fechada
     with engine.connect() as conn:
