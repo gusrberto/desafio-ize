@@ -58,30 +58,25 @@ A estrutura do projeto foi organizada para separar as responsabilidades, com o a
 ```bash
 desafio-1
 ├── airflow
-│   ├── config
-│   │   └── airflow.cfg
 │   ├── dags
-│   │   └── pipeline_rastreamento.py
-│   ├── Dockerfile
-│   └── plugins
-├── docker-compose.yaml
-├── .env.example
+│   │   └── pipeline_rastreamento.py            # Script da DAG do Airflow junto das tasks
+│   └── Dockerfile                              
+├── docker-compose.yaml                         # Docker Compose para subir o projeto com Airflow
+├── .env.example                                # Modelo de .env para o Compose
 └── pipeline
-    ├── docker-compose.dev.yaml
-    ├── .env.example
+    ├── docker-compose.dev.yaml                 # Docker Compose apenas com Banco para pipeline local
+    ├── .env.example                            # Modelo de .env para o Compose.dev
     ├── etl
-    │   ├── clean_validate.py
-    │   ├── extract.py
-    │   ├── load copy.py
-    │   ├── load.py
-    │   └── transform.py
+    │   ├── clean_validate.py                   # Script de Limpeza e Validação de Dados
+    │   ├── extract.py                          # Script de Extração de Dados
+    │   ├── load.py                             # Script de Carregamento de Dados
+    │   └── transform.py                        # Script de Transformação de Dados
     ├── init-db
-    │   └── create_tables.sql
-    ├── rastreamento.csv
-    ├── README.md
-    ├── requirements-airflow.txt
-    ├── requirements.txt
-    └── test_pipeline.py
+    │   └── create_tables.sql                   # Script DDL do Modelo de Dados
+    ├── README.md                               # Documentação do Desafio
+    ├── requirements-airflow.txt                # Dependências para Imagem com Airflow
+    ├── requirements.txt                        # Dependências para Execução do Projeto Localmente
+    └── test_pipeline.py                        # Script para Execução do Pipeline Localmente 
 ```
 
 ## 4. Gerenciamento do Projeto com Kanban
