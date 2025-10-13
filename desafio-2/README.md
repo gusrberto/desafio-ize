@@ -3,8 +3,8 @@
 Este diretório contém a solução para o desafio 1 do processo seletivo da IZE Gestão Empresarial para engenheiro de dados júnior. Desafio esse que consiste em construir uma dashboard que se alimenta das informações coletadas no desafio 1 e também a implementação de uma nova arquitetura focada na trasmissão de informações em tempo real.
 
 ## Tabela de Conteúdos
-1.  [Parte 1: Dashboard de Monitoramento com Streamlit](#1-parte-1-dashboard-de-monitoramento-com-streamlit)
-2.  [Parte 2: Evolução para Arquitetura de Streaming](#2-parte-2-evolução-para-arquitetura-de-streaming)
+1.  [Dashboard de Monitoramento com Streamlit](#1-dashboard-de-monitoramento-com-streamlit)
+2.  [Evolução para Arquitetura de Streaming](#2-evolução-para-arquitetura-de-streaming)
 3.  [Tecnologias Utilizadas](#3-tecnologias-utilizadas)
 4.  [Estrutura do Projeto](#4-estrutura-do-projeto)
 5.  [Gerenciamento do Projeto com Kanban](#5-gerenciamento-do-projeto-com-kanban)
@@ -15,7 +15,7 @@ Este diretório contém a solução para o desafio 1 do processo seletivo da IZE
 10. [Acessando os Bancos de Dados](#10-acessando-os-bancos-de-dados)
 11. [Processo de Pensamento](#11-processo-de-pensamento)
 
-## Parte 1: Dashboard de Monitoramento com Streamlit
+## 1. Dashboard de Monitoramento com Streamlit
 
 Para atender à necessidade da equipe de análise de negócios, foi desenvolvido um dashboard web interativo utilizando a biblioteca **Streamlit**. A escolha pelo Streamlit se deu por sua simplicidade e rapidez de desenvolvimento, permitindo a criação de uma solução robusta e focada em dados com código Python puro.
 
@@ -31,7 +31,7 @@ O dashboard se conecta ao banco de dados PostgreSQL populado pelo pipeline do De
 
 </center>
 
-## Parte 2: Evolução para uma Arquitetura de Streaming
+## 2. Evolução para Arquitetura de Streaming
 
 Com a futura mudança do recebimento de dados de arquivos CSV diários para um endpoint de API em tempo real, a arquitetura de processamento em lote (batch) se torna inadequada. Para lidar com um fluxo contínuo de eventos, é proposta uma nova arquitetura de **processamento de streaming**, projetada para ser resiliente, escalável e fornecer dados ao dashboard com latência mínima.
 
