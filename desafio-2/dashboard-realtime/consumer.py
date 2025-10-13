@@ -6,6 +6,7 @@ from etl.clean_validate import clean_validate_single_record
 from etl.transform import transform_single_record
 from etl.load import load_single_record
 
+
 def setup_logging():
     """
     Configuração do sistema de logging do pipeline.
@@ -17,11 +18,13 @@ def setup_logging():
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
+
 logger = logging.getLogger(__name__)
 
 KAFKA_BROKER_URL = "localhost:9094"
 TOPIC_NAME = "eventos_rastreamento"
 CONSUMER_GROUP_ID = "rastreamento_consumer_group"
+
 
 def run_consumer():
     """
@@ -34,8 +37,8 @@ def run_consumer():
             TOPIC_NAME,
             bootstrap_servers=KAFKA_BROKER_URL,
             group_id=CONSUMER_GROUP_ID,
-            auto_offset_reset='earliest',
-            value_deserializer=lambda v: json.loads(v.decode("utf-8"))
+            auto_offset_reset="earliest",
+            value_deserializer=lambda v: json.loads(v.decode("utf-8")),
         )
         logger.info(f"Consumidor conectado e escutando o tópico '{TOPIC_NAME}'...")
 
@@ -54,7 +57,9 @@ def run_consumer():
                 load_single_record(pacote_db, evento_db)
 
             except json.JSONDecodeError:
-                logger.error(f"Não foi possível decodificar a mensagem JSON: {message.value}")
+                logger.error(
+                    f"Não foi possível decodificar a mensagem JSON: {message.value}"
+                )
             except Exception as e:
                 logger.exception(f"Erro inesperado ao processar a mensagem: {e}")
 
@@ -69,6 +74,7 @@ def run_consumer():
             logger.info("Fechando conexão do Kafka Consumer...")
             consumer.close()
             logger.info("Consumer encerrado com sucesso.")
+
 
 if __name__ == "__main__":
     setup_logging()

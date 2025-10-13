@@ -5,6 +5,7 @@ import psycopg2
 
 logger = logging.getLogger(__name__)
 
+
 def get_db_connection():
     """
     Retorna uma conexão de banco de dados (padrão DBAPI) para o TimescaleDB.
@@ -37,7 +38,7 @@ def load_single_record(pacote_data: dict, evento_data: dict):
         """
         cursor.execute(upsert_pacote_sql, pacote_data)
         logger.info(f"[*] {cursor.rowcount} novos registros de pacotes inseridos.")
-        
+
         # 2. Upsert na tabela 'eventos_rastreamento'
         upsert_evento_sql = """
             INSERT INTO eventos_rastreamento (id_pacote, status_rastreamento, data_evento)
@@ -49,10 +50,14 @@ def load_single_record(pacote_data: dict, evento_data: dict):
 
         # Se tudo deu certo, comita a transação
         conn.commit()
-        logger.info(f"Registro para o pacote {pacote_data['id_pacote']} processado com sucesso.")
+        logger.info(
+            f"Registro para o pacote {pacote_data['id_pacote']} processado com sucesso."
+        )
 
     except Exception as e:
-        logger.exception("ERRO: Falha ao carregar registro único. Realizando rollback...")
+        logger.exception(
+            "ERRO: Falha ao carregar registro único. Realizando rollback..."
+        )
         if conn:
             conn.rollback()
         raise
