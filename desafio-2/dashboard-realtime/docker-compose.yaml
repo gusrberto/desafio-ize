@@ -18,5 +18,53 @@ services:
       timeout: 5s
       retries: 5
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.9.4
+    container_name: zookeeper_logistica
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+
+  kafka:
+    image: confluentinc/cp-kafka:7.9.4
+    container_name: kafka_logistica
+    ports:
+      - "9092:9092" # Listener interno
+      - "9094:9094" # Listener externo
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.9.4
+    container_name: kafka_init_logistica
+    depends_on:
+      - kafka
+    command: >
+      bash -c "
+        echo 'Esperando o Kafka iniciar...' &&
+        cub kafka-ready -b kafka:9092 1 20 &&
+        echo 'Kafka iniciado. Criando tópico...' &&
+        kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic eventos_rastreamento --partitions 1 --replication-factor 1 &&
+        echo 'Tópico criado com sucesso.'
+      "
+
 volumes:
   timescaledb_data:
+  zookeeper_data:
+  zookeeper_log:
+  kafka_data:
+  
