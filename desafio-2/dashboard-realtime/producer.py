@@ -65,7 +65,7 @@ if __name__ == "__main__":
         # Simulando requisições no endpoint da API
 
         evento_1 = {
-            "id_pacote": 1277,
+            "id_pacote": 1333,
             "origem": "Natal",
             "destino": "Paraíba",
             "status_rastreamento": "AGUARDANDO RETIRADA",
@@ -76,9 +76,9 @@ if __name__ == "__main__":
         time.sleep(5)
 
         evento_2 = {
-            "id_pacote": 1277,
-            "origem": "Natal",
-            "destino": "Paraíba",
+            "id_pacote": 1411,
+            "origem": "Acre",
+            "destino": "Rondônia",
             "status_rastreamento": "EXTRAVIADO",
             "data_atualizacao": "2025-10-12T14:30:00Z"
         }
@@ -87,11 +87,11 @@ if __name__ == "__main__":
         time.sleep(5)
 
         evento_3 = {
-            "id_pacote": 1450,
-            "origem": "Acre",
-            "destino": "Manaus",
-            "status_rastreamento": "AGUARDANDO RETIRADA",
-            "data_atualizacao": "2025-10-12T17:40:00Z"
+            "id_pacote": 1333,
+            "origem": "Natal",
+            "destino": "Paraíba",
+            "status_rastreamento": "ENTREGUE",
+            "data_atualizacao": "2025-10-13T17:40:00Z"
         }
         enviar_evento(kafka_producer, evento_3)
 
