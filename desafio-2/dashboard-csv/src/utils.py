@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+
 def formatar_timedelta(td: timedelta) -> str:
     """
     Converte um objeto timedelta em uma string de data em Português.

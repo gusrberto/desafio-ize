@@ -4,22 +4,26 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
+
 def buscar_dados_do_banco():
     """
     Conecta ao TimescaleDB e executa as queries para os KPIs.
     """
     print("Buscando dados no banco...")
-    load_dotenv('.env')
+    load_dotenv(".env")
     db_url = os.getenv("TIMESCALE_DATABASE_URL")
     if not db_url:
-        st.error("A variável TIMESCALE_DATABASE_URL não foi encontrada no arquivo .env.")
+        st.error(
+            "A variável TIMESCALE_DATABASE_URL não foi encontrada no arquivo .env."
+        )
         return None, None
 
     try:
         engine = create_engine(db_url)
         with engine.connect() as conn:
             # Query #1: Contagem de pacotes por status atual
-            query_status = text("""
+            query_status = text(
+                """
                 WITH ultimo_evento AS (
                     SELECT 
                         id_pacote, 
@@ -33,11 +37,13 @@ def buscar_dados_do_banco():
                 FROM ultimo_evento
                 WHERE rn = 1
                 GROUP BY status_rastreamento;
-            """)
+            """
+            )
             df_status = pd.read_sql(query_status, conn)
 
             # Query #2: Tempo médio de entrega
-            query_tempo_entrega = text("""
+            query_tempo_entrega = text(
+                """
                 WITH entregas_finalizadas AS (
                     SELECT
                         id_pacote,
@@ -57,7 +63,8 @@ def buscar_dados_do_banco():
                     entregas_finalizadas
                 WHERE
                     data_entrega IS NOT NULL;
-            """)
+            """
+            )
             tempo_medio = conn.execute(query_tempo_entrega).scalar_one_or_none()
 
         return df_status, tempo_medio

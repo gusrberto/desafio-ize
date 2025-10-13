@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 
+
 # Executa as queries a cada 10 minutos
 @st.cache_data(ttl=600)
 def buscar_dados_no_banco():
@@ -21,12 +22,13 @@ def buscar_dados_no_banco():
     if not db_url:
         st.error("A variável LOCAL_DATABASE_URL não foi encontrada no arquivo .env.")
         return None, None
-    
+
     try:
         engine = create_engine(db_url)
         with engine.connect() as conn:
             # Query #1: Contagem de pacotes por status atual
-            query_status = text("""
+            query_status = text(
+                """
                 WITH ultimo_evento AS (
                     SELECT 
                         id_pacote, 
@@ -40,11 +42,13 @@ def buscar_dados_no_banco():
                 FROM ultimo_evento
                 WHERE rn = 1
                 GROUP BY status_rastreamento;
-            """)
+            """
+            )
             df_status = pd.read_sql(query_status, conn)
 
             # Query #2: Tempo médio de entrega
-            query_tempo_entrega = text("""
+            query_tempo_entrega = text(
+                """
                 WITH entregas_finalizadas AS (
                     SELECT
                         id_pacote,
@@ -64,7 +68,8 @@ def buscar_dados_no_banco():
                     entregas_finalizadas
                 WHERE
                     data_entrega IS NOT NULL;
-            """)
+            """
+            )
 
             tempo_medio = conn.execute(query_tempo_entrega).scalar_one_or_none()
 
