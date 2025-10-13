@@ -3,8 +3,6 @@ import logging
 import time
 from kafka import KafkaProducer
 
-logger = logging.getLogger(__name__)
-
 def setup_logging():
     """
     Configuração do sistema de logging do pipeline.
@@ -15,6 +13,8 @@ def setup_logging():
         format="%(asctime)s [%(levelname)s] [%(name)s] - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
+
+logger = logging.getLogger(__name__)
 
 KAFKA_BROKER_URL = "localhost:9094"
 TOPIC_NAME = "eventos_rastreamento"
@@ -65,21 +65,21 @@ if __name__ == "__main__":
         # Simulando requisições no endpoint da API
 
         evento_1 = {
-            "id_pacote": 1420,
-            "origem": "Porto Alegre",
-            "destino": "Curitiba",
-            "status_rastreamento": "EM TRÂNSITO",
-            "data_atualizacao": "2025-10-11T10:15:00Z"
+            "id_pacote": 1277,
+            "origem": "Natal",
+            "destino": "Paraíba",
+            "status_rastreamento": "AGUARDANDO RETIRADA",
+            "data_atualizacao": "2025-10-12T08:15:00Z"
         }
         enviar_evento(kafka_producer, evento_1)
 
         time.sleep(5)
 
         evento_2 = {
-            "id_pacote": 1420,
-            "origem": "Porto Alegre",
-            "destino": "Curitiba",
-            "status_rastreamento": "EM ROTA DE ENTREGA",
+            "id_pacote": 1277,
+            "origem": "Natal",
+            "destino": "Paraíba",
+            "status_rastreamento": "EXTRAVIADO",
             "data_atualizacao": "2025-10-12T14:30:00Z"
         }
         enviar_evento(kafka_producer, evento_2)
@@ -87,10 +87,10 @@ if __name__ == "__main__":
         time.sleep(5)
 
         evento_3 = {
-            "id_pacote": 1420,
-            "origem": "Porto Alegre",
-            "destino": "Curitiba",
-            "status_rastreamento": "ENTREGUE",
+            "id_pacote": 1450,
+            "origem": "Acre",
+            "destino": "Manaus",
+            "status_rastreamento": "AGUARDANDO RETIRADA",
             "data_atualizacao": "2025-10-12T17:40:00Z"
         }
         enviar_evento(kafka_producer, evento_3)
